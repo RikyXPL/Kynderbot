@@ -36,7 +36,7 @@ async function KynderbotWhatsapp() {
         const chats = message.messages[0];
         let jawab;
         if (chats.message) {
-            jawab = chats.message ? chats.message.conversation : chats.message.extendedTextMessage.text ? chats.message.imageMessage.caption : Object.keys("caption");
+            jawab = chats.message ? chats.message.conversation : chats.message.extendedTextMessage.text;
         }
         const kirim = chats.key.remoteJid;
         const orang = chats ? chats.pushName : riky.user.id.split(":")[0];
