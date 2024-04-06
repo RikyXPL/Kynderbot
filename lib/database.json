@@ -5,7 +5,8 @@
         "imsak": "_Kalau di sini udah imsak loh_",
         "makasih": "Iya sama sama :)"
     },
-    "menu": "Maaf bot baru di uji coba :), menu yang tersedia saat ini:\n\n ~ Quran\n ~ Hadis\n ~ .Doa\n ~ Tanggal\n ~ Asmaul\n\n_Sekian terimakasih_",
+    "menu": "Maaf bot baru di uji coba :), menu yang tersedia saat ini:\n\n ~ Quran\n ~ Hadis\n ~ Doa\n ~ Tanggal\n ~ Asmaul\n\n_Sekian terimakasih_",
     "reset": "Mereset semua system...\nMenghapus berkas /home/riky/",
-    "resets": "Successfully resetted all system"
+    "resets": "Successfully resetted all system",
+    "spec": "OS: Ubuntu 22.04.4 LTS\nKernel: 6.8.4 perf+\nUptime: 532 hours, 6 mins\nPackages: 837 (dpkg), 6 (snap)\nShell: zsh 5.8.1\nTheme: Adwaita [GTK3]\nIcons: Adwaita [GTK3]\nTerminal: Urxvt Terminal\nCPU: Intel i5-8350U (8) @ 1.896GHz\nGPU: Intel(R) UHD Graphics 620\nMemory: 1637MiB / 7938MiB"
 }
