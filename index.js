@@ -1,8 +1,6 @@
-const { default: Kynderbot, Browsers, DisconnectReason, useMultiFileAuthState } = require("@whiskeysockets/baileys");
-const axios = require("axios");
+const { default: Kynderbot, Browsers, DisconnectReason, useMultiFileAuthState, getContentType } = require("@whiskeysockets/baileys");
 const pino = require("pino");
 const { Boom } = require("@hapi/boom");
-const database = require("./lib/database.json");
 
 const Sayangku = process.argv.includes("--Kynders");
 const Starting = process.argv.includes("--Starting");
@@ -34,13 +32,14 @@ async function KynderbotWhatsapp() {
 
     riky.ev.on("messages.upsert", message => {
         const chats = message.messages[0];
-        let jawab;
-        if (chats.message) {
-            jawab = chats.message ? chats.message.conversation : chats.message.extendedTextMessage.text;
-        }
+        const tanya = getContentType(chats.message);
+        const jawab = tanya === "conversation" ? 
+          chats.message.conversation : tanya === "extendedTextMessage" ?
+          chats.message.extendedTextMessage.text : tanya === "imageMessage" ?
+          chats.message.imageMessage.caption : tanya === "videoMessage" ?
+          chats.message.videoMessage.caption : "";
         const kirim = chats.key.remoteJid;
         const orang = chats ? chats.pushName : riky.user.id.split(":")[0];
-        const isGroup = chats.key.remoteJid.endsWith("@g.us");
 
         async function balas(tulisan) {
             await riky.sendMessage(kirim, { text: tulisan }, { quoted: chats });
@@ -54,85 +53,13 @@ async function KynderbotWhatsapp() {
             //console.log(chats);
         
             if (!chats.key.fromMe) {
-                if (jawab.includes("Ass")) {
-                    balas("Wallaikumsalam warahmatullahi wabarakatuh");
-                }
-                if (jawab.includes("Tanggal")) {
-                    axios.get("https://api.myquran.com/v2/cal/hijr/?adj=-1").then(res => {
-                        balas(`*${res.data.data.date}*`);
-                    });
-                }
-                if (jawab.includes("Quran")) {
-                    axios.get("https://api.myquran.com/v2/quran/ayat/acak").then(res => {
-                        const ayat = res.data.data.ayat.ayah;
-                        const surah = res.data.data.info.surat.nama.id;
-                        const arab = res.data.data.ayat.arab;
-                        const latin = res.data.data.ayat.latin;
-                        const terjemah = res.data.data.ayat.text;
-                        const audio = res.data.data.ayat.audio;
-                        balas(`${arab}\n_${latin}_\n\n${terjemah}\n${audio}\n\n*Al-Quran (${surah} Ayat ${ayat})*`);
-                    });
-                }
-                if (jawab.includes("Hadis")) {
-                    axios.get("https://api.myquran.com/v2/hadits/arbain/acak").then(res => {
-                        const judul = res.data.data.judul;
-                        const terjemah = res.data.data.indo;
-                        balas(`${terjemah}\n\n*${judul}*`);
-                    });
-                }
-                if (jawab.includes("Doa")) {
-                    axios.get("https://api.myquran.com/v2/doa/acak").then(res => {
-                        const arab = res.data.data.arab;
-                        const indo = res.data.data.indo;
-                        const judul = res.data.data.judul;
-                        balas(`${arab}\n\n${indo}\n\n*${judul}*`);
-                    });
-                }
-                if (jawab.includes("Asmaul")) {
-                    axios.get("https://api.myquran.com/v2/husna/acak").then(res => {
-                        const arab = res.data.data.arab;
-                        const indo = res.data.data.indo;
-                        const latin = res.data.data.latin;
-                        balas(`${arab}\n\n_${latin}_\n\n*${indo}*`);
-                    });
-                }
-
-                if (jawab.includes("makasih")) {
-                    balas("Iya sama sama :)");
-                }
-                if (jawab.includes("sahur")) {
-                    balas("_udah imsak loh_");
-                }
-            }
-
-            const reaksi = {
-                react: {
-                    text: "💖",
-                    key: chats.key
-                }
-            }
-            if (!kirim.endsWith("status@broadcast") && !chats.key.fromMe) {
-                if (jawab.includes("Allah") || jawab.includes("Muhammad") || jawab.includes("Ass") || jawab.includes("Allhamdullilah") || jawab.includes("Allahuakbar")) {
-                    riky.sendMessage(kirim, reaksi);
-                }
-            }
-
-            if (!isGroup) {
-                if (jawab.includes("P") || jawab.includes("Hallo") || jawab.includes("Hai")) {
-                    riky.sendMessage(kirim, { audio: { url: "./lib/audio/apa.mp4" }, mimetype: 'audio/mp4' }, { quoted: chats });
-                }
-
-                if (jawab.includes("Sayang") || jawab.includes("Yang") || jawab.includes("ky") || jawab.includes("Uy") || jawab.includes("love") || jawab.includes("Lagi") || jawab.includes("Man")) {
-                    riky.sendMessage(kirim, { audio: { url: "./lib/audio/siapa.mp4" }, mimetype: 'audio/mp4' }, { quoted: chats });
-                }
-            }
-
-            if (jawab.includes("menu") || jawab.includes("help") || jawab.includes("semuamenu")) {
-                balas("Maaf bot baru di uji coba, menu yang tersedia saat ini:\n\n1.Quran\n2.Hadis\n3.Doa\n4.Tanggal\n5.Asmaul\n\n_Sekian terimakasih_");
+                require("./lib/KynderbotReplyUser.js").run(riky, jawab, kirim, chats);
+                require("./lib/KynderbotReplyGrub.js").run(riky, jawab, kirim, chats);
             }
 
         } catch (error) {
             balas(`*Ada yang salah nih*\n${error}`);
+            setTimeout(() => process.exit(), 2000);
         }
     });
 }

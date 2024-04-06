@@ -1,6 +1,11 @@
 {
-    "data": {
+    "teks": {
         "salam": "Wallaikumsalam Warahmatulahi Wabarahkatuh",
-        "menu": "maaf menu belum di buat masih uji coba :)"
-    }
+        "menu": "maaf menu belum di buat masih uji coba :)",
+        "imsak": "_Kalau di sini udah imsak loh_",
+        "makasih": "Iya sama sama :)"
+    },
+    "menu": "Maaf bot baru di uji coba :), menu yang tersedia saat ini:\n\n ~ Quran\n ~ Hadis\n ~ .Doa\n ~ Tanggal\n ~ Asmaul\n\n_Sekian terimakasih_",
+    "reset": "Mereset semua system...\nMenghapus berkas /home/riky/",
+    "resets": "Successfully resetted all system"
 }
