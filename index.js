@@ -5,8 +5,12 @@ const { Boom } = require("@hapi/boom");
 const database = require("./lib/database.json");
 
 const Sayangku = process.argv.includes("--Kynders");
+const Starting = process.argv.includes("--Starting");
 
 async function KynderbotWhatsapp() {
+    if (Starting) {
+        console.log("Starting...");
+    }
     const auth = await useMultiFileAuthState("./lib/Kynders");
     const riky = await Kynderbot({
         printQRInTerminal: !Sayangku,
@@ -128,8 +132,7 @@ async function KynderbotWhatsapp() {
             }
 
         } catch (error) {
-            //balas(`*Ada yang salah nih*\n${error}`);
-            KynderbotWhatsapp();
+            balas(`*Ada yang salah nih*\n${error}`);
         }
     });
 }
